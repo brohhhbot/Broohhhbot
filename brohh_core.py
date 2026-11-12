@@ -41,14 +41,16 @@ def record():
     return open(REC,"rb").read() if os.path.exists(REC) else b""
 
 def prompt():
-    return ("Tum Brohh ho, ek Hindi voice assistant. User ko hamesha 'बॉस' kehkar bulao, jaise 'ठीक है बॉस'.. Audio sunke jawab do, hamesha shuddh Hindi (Devanagari) mein, sirf 1-2 chhote vaakya. "
-    "Abhi ka samay: "+time.strftime("%H:%M")+". "
-    "Mausam ya news poochhe to Google Search se taaza jaankari lo. Mausam ka default shahar: "+(CITY or "jo user bole")+". "
-    "Agar user koi kaam karwana chahe to sirf ek line likho, kuch aur nahi: "
-    "CMD|YOUTUBE ya CMD|CALL|contact ka naam ya number ya CMD|SMS|contact ka naam ya number|message "
-    "ya CMD|TORCH|on ya off ya CMD|VOLUME|up ya down ya 0 se 15 ka number "
-    "ya CMD|ALARM|HH|MM|label (24 ghante) ya CMD|TIMER|seconds|label. "
-    "Contact ka naam in mein se exact chuno: "+", ".join(list(CONTACTS)[:150]))
+    p="Tum Brohh ho, ek Hindi voice assistant. User ko hamesha बॉस kehkar bulao, jaise ठीक है बॉस. "
+    p+="Audio sunke jawab do, hamesha shuddh Hindi (Devanagari) mein, sirf 1-2 chhote vaakya. "
+    p+="Abhi ka samay: "+time.strftime("%H:%M")+". "
+    p+="Mausam ya news poochhe to Google Search se taaza jaankari lo. Mausam ka default shahar: "+(CITY or "jo user bole")+". "
+    p+="Agar user koi kaam karwana chahe to sirf ek line likho, kuch aur nahi: "
+    p+="CMD|YOUTUBE ya CMD|CALL|contact ka naam ya number ya CMD|SMS|contact ka naam ya number|message "
+    p+="ya CMD|TORCH|on ya off ya CMD|VOLUME|up ya down ya 0 se 15 ka number "
+    p+="ya CMD|ALARM|HH|MM|label (24 ghante) ya CMD|TIMER|seconds|label. "
+    p+="Contact ka naam in mein se exact chuno: "+", ".join(list(CONTACTS)[:150])
+    return p
 
 def call_gemini(data,tools):
     u="https://generativelanguage.googleapis.com/v1beta/models/"+MODEL+":generateContent?key="+GEMINI_KEY
@@ -82,33 +84,33 @@ def handle(a):
     act=p[0].upper()
     tg("Kaam: "+m.group(1))
     if act=="YOUTUBE":
-        sh("am","start","-a","android.intent.action.VIEW","-d","https://youtube.com"); speak("यूट्यूब खोल दिया")
+        sh("am","start","-a","android.intent.action.VIEW","-d","https://youtube.com"); speak("यूट्यूब खोल दिया बॉस")
     elif act=="CALL" and len(p)>1:
         n,num=find(p[1])
-        if not num: speak("ये नंबर नहीं मिला"); return
-        if confirm(n+" को कॉल करूँ?"): sh("termux-telephony-call",num); speak("कॉल लगा रहा हूँ")
+        if not num: speak("ये नंबर नहीं मिला बॉस"); return
+        if confirm(n+" को कॉल करूँ?"): sh("termux-telephony-call",num); speak("कॉल लगा रहा हूँ बॉस")
     elif act=="SMS" and len(p)>2:
         n,num=find(p[1]); msg="|".join(p[2:])
-        if not num: speak("ये नंबर नहीं मिला"); return
-        if confirm(n+" को भेजूँ: "+msg): sh("termux-sms-send","-n",num,msg); speak("मैसेज भेज दिया")
+        if not num: speak("ये नंबर नहीं मिला बॉस"); return
+        if confirm(n+" को भेजूँ: "+msg): sh("termux-sms-send","-n",num,msg); speak("मैसेज भेज दिया बॉस")
     elif act=="TORCH" and len(p)>1:
-        sh("termux-torch","on" if p[1].lower()=="on" else "off"); speak("टॉर्च "+("चालू" if p[1].lower()=="on" else "बंद"))
+        sh("termux-torch","on" if p[1].lower()=="on" else "off"); speak("टॉर्च "+("चालू" if p[1].lower()=="on" else "बंद")+" बॉस")
     elif act=="VOLUME" and len(p)>1:
         try:
             mx=15; cur=0
             for s in json.loads(sh("termux-volume")):
                 if s["stream"]=="music": mx=s["max_volume"]; cur=s["volume"]
             v=min(mx,cur+3) if p[1]=="up" else max(0,cur-3) if p[1]=="down" else min(mx,max(0,int(p[1])))
-            sh("termux-volume","music",str(v)); speak("आवाज़ बदल दी")
+            sh("termux-volume","music",str(v)); speak("आवाज़ बदल दी बॉस")
         except Exception as e:
             tg("Volume error: "+str(e))
     elif act=="ALARM" and len(p)>2:
         sh("am","start","-a","android.intent.action.SET_ALARM","--ei","android.intent.extra.alarm.HOUR",str(int(p[1])),"--ei","android.intent.extra.alarm.MINUTES",str(int(p[2])),"--es","android.intent.extra.alarm.MESSAGE",(p[3] if len(p)>3 else "Brohh"),"--ez","android.intent.extra.alarm.SKIP_UI","true")
-        speak("अलार्म लगा दिया")
+        speak("अलार्म लगा दिया बॉस")
     elif act=="TIMER" and len(p)>1:
-        threading.Timer(int(p[1]),ring,args=((p[2] if len(p)>2 else ""),)).start(); speak("टाइमर लगा दिया")
+        threading.Timer(int(p[1]),ring,args=((p[2] if len(p)>2 else ""),)).start(); speak("टाइमर लगा दिया बॉस")
     else:
-        speak("ये काम समझ नहीं आया")
+        speak("ये काम समझ नहीं आया बॉस")
 
 load_contacts()
 tg("Brohh start hua")
