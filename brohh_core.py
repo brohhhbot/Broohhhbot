@@ -41,7 +41,7 @@ def record():
     return open(REC,"rb").read() if os.path.exists(REC) else b""
 
 def prompt():
-    return ("Tum Brohh ho, ek Hindi voice assistant. User ko hamesha 'बॉस' kehkar bulao, jaise 'ठीक है बॉस'.. Audio sunke jawab do, hamesha shuddh Hindi (Devanagari) mein, sirf 1-2 chhote vaakya. ")
+    return ("Tum Brohh ho, ek Hindi voice assistant. User ko hamesha 'बॉस' kehkar bulao, jaise 'ठीक है बॉस'.. Audio sunke jawab do, hamesha shuddh Hindi (Devanagari) mein, sirf 1-2 chhote vaakya. "
     "Abhi ka samay: "+time.strftime("%H:%M")+". "
     "Mausam ya news poochhe to Google Search se taaza jaankari lo. Mausam ka default shahar: "+(CITY or "jo user bole")+". "
     "Agar user koi kaam karwana chahe to sirf ek line likho, kuch aur nahi: "
