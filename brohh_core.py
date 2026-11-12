@@ -115,6 +115,7 @@ tg("Brohh start hua")
 while True:
     try:
         subprocess.run(["termux-dialog","confirm","-t","Brohh","-i","Bolna hai?"],capture_output=True)
+        speak("हाँ बॉस")
         data=record()
         if len(data)>1000: handle(ask_audio(data))
         else: tg("Recording khali aayi")
